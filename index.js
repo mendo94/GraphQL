@@ -1,10 +1,11 @@
 const { ApolloServer, gql } = require("apollo-server");
 
 //Scaler type is a data type
+//string!]! is say if there is not a string, return null and the second bang is saying do not return null - return nothing.
 
 const typeDefs = gql`
   type Query {
-    hello: String
+    hello: [String!]!
     numberOfAnimals: Int
     price: Float
     isCool: Boolean
@@ -14,7 +15,7 @@ const typeDefs = gql`
 const resolvers = {
   Query: {
     hello: () => {
-      return "World";
+      return ["hello", "my", "friend"];
     },
     numberOfAnimals: () => {
       return 88;
