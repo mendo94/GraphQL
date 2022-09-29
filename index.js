@@ -2,7 +2,20 @@ const { ApolloServer, gql } = require("apollo-server");
 
 //Scaler type is a data type
 //[string!]! is say if there is not a string, return null and the second bang is saying do not return null - return nothing.
-
+const categories = [
+  {
+    id: "c01b1ff4-f894-4ef2-b27a-22aacc2fca70",
+    name: "Kitchen",
+  },
+  {
+    id: "34115aac-0ff5-4859-8f43-10e8db23602b",
+    name: "Garden",
+  },
+  {
+    id: "d914aec0-25b2-4103-9ed8-225d39018d1d",
+    name: "Sports",
+  },
+];
 const products = [
   {
     id: "53a0724c-a416-4cac-ae45-bfaedce1f147",
@@ -89,18 +102,25 @@ const products = [
 
 const typeDefs = gql`
   type Query {
-    hello: [String!]!
     products: [Product!]!
     product(id: ID!): Product
+    categories: [Category!]!
+    category(id: ID!): Category
   }
   # Object type is [Product]
   type Product {
+    id: ID!
     name: String!
     description: String!
     quantity: Int!
     image: String!
     price: Float!
     onSale: Boolean
+  }
+
+  type Category {
+    id: ID!
+    name: String!
   }
 `;
 
@@ -110,32 +130,17 @@ const resolvers = {
       return products;
     },
     product: (parent, args, context) => {
-      const productId = args.id;
-      const product = products.find((product) => product.id === productId);
-      if (!product) return null;
-      return product;
+      const { id } = args;
+      return products.find((product) => product.id === productId);
+    },
+    categories: (parent, args, context) => categories,
+    category: (parent, args, context) => {
+      const { id } = args;
+      return categories.find((category) => category.id === id);
     },
   },
 };
 
-// in the graphql studio, query products and specify what you want returned.
-// query {
-//     products {
-//       name
-//       price
-//     }
-//     }
-// output =
-// {
-//     "data": {
-//       "products": [
-//         {
-//           "name": "Bike",
-//           "price": 3444
-//         }
-//       ]
-//     }
-//   }
 const server = new ApolloServer({
   typeDefs,
   resolvers,
